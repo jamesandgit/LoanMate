@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#47505e" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="LoanMate" />
+<meta name="description" content="LoanMate — Australian mortgage, stamp duty, borrowing power & LMI calculators. Works offline." />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<link rel="stylesheet" href="styles.css" />
+<title>LoanMate — Aussie Loan Calculators</title>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect x="2" y="2" width="36" height="36" rx="8" fill="#1A2B52"/>
+        <path d="M11 27 V14 L20 22 L29 14 V27" stroke="#A87C4E" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+      </svg>
+      <h1>LoanMate</h1>
+    </div>
+    <p class="tagline">Aussie loan calculators · works offline</p>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Calculators">
+    <button class="tab active" role="tab" data-tab="repayments">Repayments</button>
+    <button class="tab" role="tab" data-tab="payoff">Payoff</button>
+    <button class="tab" role="tab" data-tab="stamp">Stamp Duty</button>
+    <button class="tab" role="tab" data-tab="borrow">Borrowing</button>
+    <button class="tab" role="tab" data-tab="lmi">LMI</button>
+  </nav>
+
+  <main class="content">
+
+    <!-- ============ REPAYMENTS ============ -->
+    <section id="repayments" class="panel active" role="tabpanel">
+      <h2>Mortgage Repayments</h2>
+      <p class="hint">Calculate your loan repayments and total interest.</p>
+
+      <div class="field">
+        <label for="rep-amount">Loan amount</label>
+        <div class="input-prefix"><span>$</span><input id="rep-amount" type="number" inputmode="decimal" value="800000" min="0" step="1000"></div>
+      </div>
+
+      <div class="field">
+        <label for="rep-rate">Interest rate (% p.a.)</label>
+        <div class="input-suffix"><input id="rep-rate" type="number" inputmode="decimal" value="6.5" min="0" step="0.01"><span>%</span></div>
+      </div>
+
+      <div class="field">
+        <label for="rep-term">Loan term (years)</label>
+        <input id="rep-term" type="number" inputmode="numeric" value="30" min="1" max="40" step="1">
+      </div>
+
+      <div class="field">
+        <label for="rep-offset">Offset balance (optional)</label>
+        <div class="input-prefix"><span>$</span><input id="rep-offset" type="number" inputmode="decimal" value="0" min="0" step="500"></div>
+      </div>
+
+      <div class="field">
+        <label for="rep-extra">Extra repayment per period (optional)</label>
+        <div class="input-prefix"><span>$</span><input id="rep-extra" type="number" inputmode="decimal" value="0" min="0" step="50"></div>
+      </div>
+
+      <div class="field">
+        <label>Repayment frequency</label>
+        <div class="segmented" role="radiogroup">
+          <button type="button" class="seg active" data-freq="monthly">Monthly</button>
+          <button type="button" class="seg" data-freq="fortnightly">Fortnightly</button>
+          <button type="button" class="seg" data-freq="weekly">Weekly</button>
+        </div>
+      </div>
+
+      <div class="results">
+        <div class="result-card primary">
+          <span class="label">Repayment <small id="rep-freq-label">/ month</small></span>
+          <span class="value" id="rep-payment">—</span>
+        </div>
+        <div class="result-row">
+          <div class="result-card">
+            <span class="label">Total interest</span>
+            <span class="value" id="rep-interest">—</span>
+          </div>
+          <div class="result-card">
+            <span class="label">Total cost</span>
+            <span class="value" id="rep-total">—</span>
+          </div>
+        </div>
+        <div class="result-card subtle" id="rep-saved-offset-card" hidden>
+          <span class="label">Saved by offset</span>
+          <span class="value" id="rep-saved-offset">—</span>
+        </div>
+        <div class="result-card subtle" id="rep-saved-extra-card" hidden>
+          <span class="label">Saved by extra repayments</span>
+          <span class="value" id="rep-saved-extra">—</span>
+        </div>
+        <div class="result-card combined" id="rep-saved-combined-card" hidden>
+          <span class="label">Combined savings</span>
+          <span class="value" id="rep-saved-combined">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PAYOFF TIME ============ -->
+    <section id="payoff" class="panel" role="tabpanel">
+      <h2>When will I finish paying?</h2>
+      <p class="hint">Enter your current balance and what you're paying — get your finish date.</p>
+
+      <div class="field">
+        <label for="po-balance">Current loan balance</label>
+        <div class="input-prefix"><span>$</span><input id="po-balance" type="number" inputmode="decimal" value="800000" min="0" step="100"></div>
+      </div>
+
+      <div class="field">
+        <label for="po-rate">Interest rate (% p.a.)</label>
+        <div class="input-suffix"><input id="po-rate" type="number" inputmode="decimal" value="6.5" min="0" step="0.01"><span>%</span></div>
+      </div>
+
+      <div class="field">
+        <label>Repayment frequency</label>
+        <div class="segmented" role="radiogroup">
+          <button type="button" class="seg" data-pofreq="monthly">Monthly</button>
+          <button type="button" class="seg" data-pofreq="fortnightly">Fortnightly</button>
+          <button type="button" class="seg active" data-pofreq="weekly">Weekly</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="po-payment">Repayment amount <small id="po-pay-label">/ week</small></label>
+        <div class="input-prefix"><span>$</span><input id="po-payment" type="number" inputmode="decimal" value="800" min="0" step="10"></div>
+      </div>
+
+      <div class="field">
+        <label for="po-offset">Offset balance</label>
+        <div class="input-prefix"><span>$</span><input id="po-offset" type="number" inputmode="decimal" value="50000" min="0" step="500"></div>
+      </div>
+
+      <div class="field">
+        <label for="po-extra">Extra repayment per period (optional)</label>
+        <div class="input-prefix"><span>$</span><input id="po-extra" type="number" inputmode="decimal" value="0" min="0" step="10"></div>
+      </div>
+
+      <div class="results">
+        <div class="result-card primary">
+          <span class="label">Time remaining</span>
+          <span class="value" id="po-time">—</span>
+        </div>
+        <div class="result-row">
+          <div class="result-card">
+            <span class="label">Finish date</span>
+            <span class="value" id="po-date">—</span>
+          </div>
+          <div class="result-card">
+            <span class="label">Interest remaining</span>
+            <span class="value" id="po-interest">—</span>
+          </div>
+        </div>
+        <div class="result-card subtle" id="po-saved-offset-card" hidden>
+          <span class="label">Time saved by offset</span>
+          <span class="value" id="po-saved-offset">—</span>
+        </div>
+        <div class="result-card subtle" id="po-saved-extra-card" hidden>
+          <span class="label">Time saved by extra repayments</span>
+          <span class="value" id="po-saved-extra">—</span>
+        </div>
+        <div class="result-card combined" id="po-saved-combined-card" hidden>
+          <span class="label">Combined time saved</span>
+          <span class="value" id="po-saved-combined">—</span>
+        </div>
+        <details class="extra-tool">
+          <summary>Verify a lender interest charge</summary>
+          <div class="field" style="margin-top:14px;">
+            <label for="po-charge">Interest charged this period</label>
+            <div class="input-prefix"><span>$</span><input id="po-charge" type="number" inputmode="decimal" value="2800.80" min="0" step="0.01"></div>
+          </div>
+          <div class="field">
+            <label for="po-days">Days in billing period</label>
+            <input id="po-days" type="number" inputmode="numeric" value="31" min="1" max="62" step="1">
+          </div>
+          <div class="result-card subtle">
+            <span class="label">Implied effective offset that period</span>
+            <span class="value" id="po-implied-offset">—</span>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- ============ STAMP DUTY ============ -->
+    <section id="stamp" class="panel" role="tabpanel">
+      <h2>Stamp Duty</h2>
+      <p class="hint">Estimated transfer duty across all Australian states & territories.</p>
+
+      <div class="field">
+        <label for="sd-price">Property price</label>
+        <div class="input-prefix"><span>$</span><input id="sd-price" type="number" inputmode="decimal" value="750000" min="0" step="1000"></div>
+      </div>
+
+      <div class="field">
+        <label for="sd-state">State / Territory</label>
+        <select id="sd-state">
+          <option value="NSW">New South Wales</option>
+          <option value="VIC">Victoria</option>
+          <option value="QLD">Queensland</option>
+          <option value="WA">Western Australia</option>
+          <option value="SA">South Australia</option>
+          <option value="TAS">Tasmania</option>
+          <option value="ACT">Australian Capital Territory</option>
+          <option value="NT">Northern Territory</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Buyer type</label>
+        <div class="segmented" role="radiogroup">
+          <button type="button" class="seg active" data-buyer="oo">Owner-occupier</button>
+          <button type="button" class="seg" data-buyer="inv">Investor</button>
+          <button type="button" class="seg" data-buyer="fhb">First home buyer</button>
+        </div>
+      </div>
+
+      <div class="results">
+        <div class="result-card primary">
+          <span class="label">Estimated stamp duty</span>
+          <span class="value" id="sd-amount">—</span>
+        </div>
+        <div class="result-card subtle">
+          <span class="label">Effective rate</span>
+          <span class="value" id="sd-rate">—</span>
+        </div>
+        <p class="disclaimer" id="sd-note">Estimate only — verify with your state revenue office.</p>
+      </div>
+    </section>
+
+    <!-- ============ BORROWING POWER ============ -->
+    <section id="borrow" class="panel" role="tabpanel">
+      <h2>Borrowing Power</h2>
+      <p class="hint">Rough estimate of how much a lender may offer.</p>
+
+      <div class="field">
+        <label for="bp-income">Annual gross income (combined)</label>
+        <div class="input-prefix"><span>$</span><input id="bp-income" type="number" inputmode="decimal" value="120000" min="0" step="1000"></div>
+      </div>
+
+      <div class="field">
+        <label for="bp-expenses">Monthly living expenses</label>
+        <div class="input-prefix"><span>$</span><input id="bp-expenses" type="number" inputmode="decimal" value="3500" min="0" step="100"></div>
+      </div>
+
+      <div class="field">
+        <label for="bp-debts">Other monthly debt repayments</label>
+        <div class="input-prefix"><span>$</span><input id="bp-debts" type="number" inputmode="decimal" value="0" min="0" step="50"></div>
+      </div>
+
+      <div class="field">
+        <label for="bp-deps">Number of dependants</label>
+        <input id="bp-deps" type="number" inputmode="numeric" value="0" min="0" max="10" step="1">
+      </div>
+
+      <div class="field">
+        <label for="bp-rate">Assessment rate (% p.a.)</label>
+        <div class="input-suffix"><input id="bp-rate" type="number" inputmode="decimal" value="9.47" min="0" step="0.01"><span>%</span></div>
+        <small class="hint">APRA-style buffer: typical rate + 3%.</small>
+      </div>
+
+      <div class="field">
+        <label for="bp-term">Loan term (years)</label>
+        <input id="bp-term" type="number" inputmode="numeric" value="30" min="1" max="40" step="1">
+      </div>
+
+      <div class="results">
+        <div class="result-card primary">
+          <span class="label">Estimated borrowing power</span>
+          <span class="value" id="bp-amount">—</span>
+        </div>
+        <div class="result-card subtle">
+          <span class="label">Maximum monthly repayment</span>
+          <span class="value" id="bp-payment">—</span>
+        </div>
+        <p class="disclaimer">Indicative only — actual lender assessments vary.</p>
+      </div>
+    </section>
+
+    <!-- ============ LMI ============ -->
+    <section id="lmi" class="panel" role="tabpanel">
+      <h2>Lenders Mortgage Insurance</h2>
+      <p class="hint">LMI typically applies when your deposit is under 20% (LVR &gt; 80%).</p>
+
+      <div class="field">
+        <label for="lmi-price">Property value</label>
+        <div class="input-prefix"><span>$</span><input id="lmi-price" type="number" inputmode="decimal" value="750000" min="0" step="1000"></div>
+      </div>
+
+      <div class="field">
+        <label for="lmi-deposit">Deposit</label>
+        <div class="input-prefix"><span>$</span><input id="lmi-deposit" type="number" inputmode="decimal" value="75000" min="0" step="1000"></div>
+      </div>
+
+      <div class="results">
+        <div class="result-card">
+          <span class="label">Loan amount</span>
+          <span class="value" id="lmi-loan">—</span>
+        </div>
+        <div class="result-card">
+          <span class="label">LVR</span>
+          <span class="value" id="lmi-lvr">—</span>
+        </div>
+        <div class="result-card primary">
+          <span class="label">Estimated LMI</span>
+          <span class="value" id="lmi-amount">—</span>
+        </div>
+        <p class="disclaimer">Estimate based on industry-standard LMI premium tables.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <span>LoanMate v1.0 · Estimates only, not financial advice</span>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>

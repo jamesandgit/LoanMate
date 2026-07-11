@@ -1368,6 +1368,33 @@ function refreshMiniBarVisibility() {
   setTimeout(() => { miniTick = false; refreshMiniBarVisibility(); }, 120);
 }, { passive: true }));
 
+/* ---------- Theme toggle (light / dark, persisted) ---------- */
+function applyThemeIcon() {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.getElementById('theme-icon-moon').hidden = dark;
+  document.getElementById('theme-icon-sun').hidden = !dark;
+  document.getElementById('theme-btn').setAttribute('aria-label',
+    dark ? 'Switch to light mode' : 'Switch to dark mode');
+}
+document.getElementById('theme-btn').addEventListener('click', () => {
+  const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('lnTheme', next); } catch (e) {}
+  applyThemeIcon();
+});
+// Follow system changes until the user explicitly picks a theme
+if (window.matchMedia) {
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    let stored = null;
+    try { stored = localStorage.getItem('lnTheme'); } catch (err) {}
+    if (stored !== 'light' && stored !== 'dark') {
+      document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+      applyThemeIcon();
+    }
+  });
+}
+applyThemeIcon();
+
 /* ---------- Print: expand collapsed sections so their content renders ---------- */
 let printOpenedDetails = [];
 window.addEventListener('beforeprint', () => {

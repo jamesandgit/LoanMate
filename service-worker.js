@@ -1,5 +1,5 @@
 /* LoanMate offline service worker */
-const CACHE = 'loanmate-v30';
+const CACHE = 'loanmate-v31';
 const ASSETS = [
   './',
   './index.html',

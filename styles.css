@@ -51,8 +51,7 @@
   --radius-sm:   10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
+:root[data-theme="dark"] {
     color-scheme: dark;
 
     --c-bg:        #23272F;
@@ -84,7 +83,6 @@
 
     --c-shadow:    0 2px 12px rgba(0, 0, 0, 0.35);
     --c-shadow-lg: 0 10px 28px rgba(0, 0, 0, 0.5);
-  }
 }
 
 * { box-sizing: border-box; }
@@ -155,6 +153,9 @@ body {
 }
 .share-btn:hover { background: rgba(241, 233, 214, 0.22); }
 .share-btn:active { transform: scale(0.97); }
+.theme-btn { padding: 6px 9px; }
+.theme-btn svg { display: block; }
+.theme-btn svg[hidden] { display: none; }
 .share-btn.copied { background: var(--c-tan); color: var(--c-ink-on-tan); border-color: transparent; }
 
 .share-toast {
@@ -351,10 +352,8 @@ small.hint {
   background-position: right 14px center;
   padding-right: 38px;
 }
-@media (prefers-color-scheme: dark) {
-  .field select {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><path d='M3 5l4 4 4-4' stroke='%23C9D1DC' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-  }
+:root[data-theme="dark"] .field select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'><path d='M3 5l4 4 4-4' stroke='%23C9D1DC' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
 }
 
 .input-prefix,
@@ -767,10 +766,8 @@ small.hint {
   background-position: right 10px center;
   padding-right: 26px;
 }
-@media (prefers-color-scheme: dark) {
-  .event-item select {
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 14 14'><path d='M3 5l4 4 4-4' stroke='%23C9D1DC' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
-  }
+:root[data-theme="dark"] .event-item select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 14 14'><path d='M3 5l4 4 4-4' stroke='%23C9D1DC' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
 }
 .event-item .remove-event {
   width: 32px;

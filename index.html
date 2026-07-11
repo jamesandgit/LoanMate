@@ -34,10 +34,7 @@
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Calculators">
-    <button class="tab active" role="tab" data-tab="repayments">Repayments</button>
-    <button class="tab" role="tab" data-tab="payoff">Payoff</button>
-    <button class="tab" role="tab" data-tab="myloan">My Loan</button>
-    <button class="tab" role="tab" data-tab="breakdown">Breakdown</button>
+    <button class="tab active" role="tab" data-tab="loan">Loan</button>
     <button class="tab" role="tab" data-tab="stamp">Stamp Duty</button>
     <button class="tab" role="tab" data-tab="borrow">Borrowing</button>
     <button class="tab" role="tab" data-tab="lmi">LMI</button>
@@ -45,499 +42,368 @@
 
   <main class="content">
 
-    <!-- ============ REPAYMENTS ============ -->
-    <section id="repayments" class="panel active" role="tabpanel">
-      <h2>Mortgage Repayments</h2>
-      <p class="hint">Calculate your loan repayments and total interest.</p>
+    <!-- ============ LOAN (unified: repayments · payoff · my loan · breakdown) ============ -->
+    <section id="loan" class="panel active" role="tabpanel">
+      <h2>Loan Calculator</h2>
+      <p class="hint">Model a new loan or track an existing one — repayments, payoff date, full schedule, and what-ifs in one place.</p>
 
-      <div class="field">
-        <label for="rep-amount">Loan amount</label>
-        <div class="input-prefix"><span>$</span><input id="rep-amount" type="number" inputmode="decimal" value="800000" min="0" step="1000"></div>
-      </div>
-
-      <div class="field">
-        <label for="rep-rate">Interest rate (% p.a.)</label>
-        <div class="input-suffix"><input id="rep-rate" type="number" inputmode="decimal" value="6.5" min="0" step="0.01"><span>%</span></div>
-      </div>
-
-      <details class="opt-section" id="rep-compare-section">
-        <summary>Compare another rate <span class="count" id="rep-compare-pill" hidden>ON</span></summary>
-        <div class="field" style="margin-top:12px;">
-          <label for="rep-rate2">Compare rate (% p.a.) <button type="button" class="help" data-tip="Bank A vs Bank B: keep loan amount, term, offset, and extras the same — flip only the rate. The comparison panel below shows the dollar difference.">?</button></label>
-          <div class="input-suffix"><input id="rep-rate2" type="number" inputmode="decimal" placeholder="e.g. 6.25" min="0" step="0.01"><span>%</span></div>
-        </div>
-        <small class="hint">A small rate difference can mean thousands over the life of the loan. Set this to see what each basis point actually costs you.</small>
-      </details>
-
-      <div class="field-row">
-        <div class="field">
-          <label for="rep-term">Loan term — years</label>
-          <input id="rep-term" type="number" inputmode="numeric" value="30" min="0" max="40" step="1">
-        </div>
-        <div class="field">
-          <label for="rep-term-months">Months</label>
-          <input id="rep-term-months" type="number" inputmode="numeric" value="0" min="0" max="11" step="1">
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="rep-offset">Offset balance (optional) <button type="button" class="help" data-tip="Cash sitting in your offset account. Interest is calculated on (loan − offset), so a $50k offset on a 6.5% loan saves you roughly $3,250 in interest per year.">?</button></label>
-        <div class="input-prefix"><span>$</span><input id="rep-offset" type="number" inputmode="decimal" value="0" min="0" step="500"></div>
-      </div>
-
-      <div class="field">
-        <label for="rep-extra">Extra repayment per period (optional) <button type="button" class="help" data-tip="Amount you'd pay on top of the contractual repayment each period. Goes directly to principal and compounds: every $1 of extra shortens the loan by more than $1 of interest avoided.">?</button></label>
-        <div class="input-prefix"><span>$</span><input id="rep-extra" type="number" inputmode="decimal" value="0" min="0" step="50"></div>
-      </div>
-
-      <div class="field">
-        <label>Repayment frequency <button type="button" class="help" data-tip="Weekly and fortnightly are derived as (monthly × 12 ÷ 52) and (× 12 ÷ 26). Actual lender amortisation still charges interest monthly — see the disclosure note below savings.">?</button></label>
-        <div class="segmented" role="radiogroup">
-          <button type="button" class="seg active" data-freq="monthly">Monthly</button>
-          <button type="button" class="seg" data-freq="fortnightly">Fortnightly</button>
-          <button type="button" class="seg" data-freq="weekly">Weekly</button>
-        </div>
-      </div>
-
-      <div class="results">
-        <div class="result-card primary">
-          <span class="label">Repayment <small id="rep-freq-label">/ month</small></span>
-          <span class="value" id="rep-payment">—</span>
-        </div>
-        <div class="result-row">
-          <div class="result-card">
-            <span class="label">Total interest</span>
-            <span class="value" id="rep-interest">—</span>
-          </div>
-          <div class="result-card">
-            <span class="label">Total cost</span>
-            <span class="value" id="rep-total">—</span>
-          </div>
-        </div>
-        <div class="result-row">
-          <div class="result-card">
-            <span class="label">Loan paid off</span>
-            <span class="value" id="rep-finish">—</span>
-          </div>
-          <div class="result-card">
-            <span class="label">Actual term</span>
-            <span class="value" id="rep-actual-term">—</span>
-          </div>
-        </div>
-        <div class="result-card subtle" id="rep-saved-offset-card" hidden>
-          <span class="label">Saved by offset</span>
-          <span class="value" id="rep-saved-offset">—</span>
-        </div>
-        <div class="result-card subtle" id="rep-saved-extra-card" hidden>
-          <span class="label">Saved by extra repayments</span>
-          <span class="value" id="rep-saved-extra">—</span>
-        </div>
-        <div class="result-card combined" id="rep-saved-combined-card" hidden>
-          <span class="label">Combined savings</span>
-          <span class="value" id="rep-saved-combined">—</span>
-        </div>
-        <div class="empty-prompt" id="rep-empty" hidden>
-          Add an <strong>offset</strong> or <strong>extra repayment</strong> above to see how much you'd save.
-        </div>
-        <p class="freq-note" id="rep-freq-note" hidden></p>
-
-        <div class="compare-panel" id="rep-compare-panel" hidden>
-          <h3 class="section-heading">Rate comparison</h3>
-          <div class="compare-grid">
-            <div class="compare-bank" id="rep-compare-bankA">
-              <div class="compare-head">
-                <span class="compare-name">Your rate</span>
-                <span class="compare-rate" id="rep-compare-rateA">—</span>
-              </div>
-              <dl class="compare-stats">
-                <div><dt>Repayment</dt><dd id="rep-compare-payA">—</dd></div>
-                <div><dt>Total interest</dt><dd id="rep-compare-intA">—</dd></div>
-                <div><dt>Total cost</dt><dd id="rep-compare-costA">—</dd></div>
-              </dl>
-            </div>
-            <div class="compare-bank" id="rep-compare-bankB">
-              <div class="compare-head">
-                <span class="compare-name">Other rate</span>
-                <span class="compare-rate" id="rep-compare-rateB">—</span>
-              </div>
-              <dl class="compare-stats">
-                <div><dt>Repayment</dt><dd id="rep-compare-payB">—</dd></div>
-                <div><dt>Total interest</dt><dd id="rep-compare-intB">—</dd></div>
-                <div><dt>Total cost</dt><dd id="rep-compare-costB">—</dd></div>
-              </dl>
-            </div>
-          </div>
-          <div class="compare-delta">
-            <div class="delta-headline" id="rep-delta-headline">—</div>
-            <div class="delta-grid">
-              <div><dt>Per <span id="rep-delta-period">month</span></dt><dd id="rep-delta-pay">—</dd></div>
-              <div><dt>Over the loan</dt><dd id="rep-delta-int">—</dd></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ PAYOFF TIME ============ -->
-    <section id="payoff" class="panel" role="tabpanel">
-      <h2>When will I finish paying?</h2>
-      <p class="hint">Enter your current balance and what you're paying — get your finish date.</p>
-
-      <div class="field">
-        <label for="po-balance">Current loan balance</label>
-        <div class="input-prefix"><span>$</span><input id="po-balance" type="number" inputmode="decimal" value="800000" min="0" step="100"></div>
-      </div>
-
-      <div class="field">
-        <label for="po-rate">Interest rate (% p.a.)</label>
-        <div class="input-suffix"><input id="po-rate" type="number" inputmode="decimal" value="6.5" min="0" step="0.01"><span>%</span></div>
-      </div>
-
-      <div class="field">
-        <label>Repayment frequency</label>
-        <div class="segmented" role="radiogroup">
-          <button type="button" class="seg" data-pofreq="monthly">Monthly</button>
-          <button type="button" class="seg" data-pofreq="fortnightly">Fortnightly</button>
-          <button type="button" class="seg active" data-pofreq="weekly">Weekly</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="po-payment">Repayment amount <small id="po-pay-label">/ week</small></label>
-        <div class="input-prefix"><span>$</span><input id="po-payment" type="number" inputmode="decimal" value="800" min="0" step="10"></div>
-      </div>
-
-      <div class="field">
-        <label for="po-offset">Offset balance <button type="button" class="help" data-tip="Current cash in your offset. Treated as constant for the remaining life of the loan — actual finish dates will be later if you draw down the offset.">?</button></label>
-        <div class="input-prefix"><span>$</span><input id="po-offset" type="number" inputmode="decimal" value="50000" min="0" step="500"></div>
-      </div>
-
-      <div class="field">
-        <label for="po-extra">Extra repayment per period (optional) <button type="button" class="help" data-tip="Voluntary amount on top of your contractual repayment. Even small extras compound — $50/week extra on a $500k loan typically shortens it by 4–6 years.">?</button></label>
-        <div class="input-prefix"><span>$</span><input id="po-extra" type="number" inputmode="decimal" value="0" min="0" step="10"></div>
-      </div>
-
-      <div class="results">
-        <div class="result-card primary">
-          <span class="label">Time remaining</span>
-          <span class="value" id="po-time">—</span>
-        </div>
-        <div class="result-row">
-          <div class="result-card">
-            <span class="label">Finish date</span>
-            <span class="value" id="po-date">—</span>
-          </div>
-          <div class="result-card">
-            <span class="label">Interest remaining</span>
-            <span class="value" id="po-interest">—</span>
-          </div>
-        </div>
-        <div class="result-card subtle" id="po-saved-offset-card" hidden>
-          <span class="label">Time saved by offset</span>
-          <span class="value" id="po-saved-offset">—</span>
-        </div>
-        <div class="result-card subtle" id="po-saved-extra-card" hidden>
-          <span class="label">Time saved by extra repayments</span>
-          <span class="value" id="po-saved-extra">—</span>
-        </div>
-        <div class="result-card combined" id="po-saved-combined-card" hidden>
-          <span class="label">Combined time saved</span>
-          <span class="value" id="po-saved-combined">—</span>
-        </div>
-        <div class="empty-prompt" id="po-empty" hidden>
-          Add an <strong>offset</strong> or <strong>extra repayment</strong> above to see how much sooner you could be done.
-        </div>
-        <details class="extra-tool">
-          <summary>Verify a lender interest charge</summary>
-          <div class="field" style="margin-top:14px;">
-            <label for="po-charge">Interest charged this period <button type="button" class="help" data-tip="The interest line on your bank statement. We back-solve what your effective offset must have been: useful for spotting mid-month offset transfers or auditing the bank.">?</button></label>
-            <div class="input-prefix"><span>$</span><input id="po-charge" type="number" inputmode="decimal" value="2800.80" min="0" step="0.01"></div>
-          </div>
-          <div class="field">
-            <label for="po-days">Days in billing period</label>
-            <input id="po-days" type="number" inputmode="numeric" value="31" min="1" max="62" step="1">
-          </div>
-          <div class="result-card subtle">
-            <span class="label">Implied effective offset that period</span>
-            <span class="value" id="po-implied-offset">—</span>
-          </div>
-        </details>
-      </div>
-    </section>
-
-    <!-- ============ MY LOAN (existing-loan reconstruction, Figura-style) ============ -->
-    <section id="myloan" class="panel" role="tabpanel">
-      <h2>My Loan</h2>
-      <p class="hint">Track an existing loan or model a new one. Expand sections below for offset, extras, rate changes &amp; more.</p>
+      <div class="panel-grid">
+      <div class="inputs">
 
       <div class="field">
         <label>Loan type</label>
         <div class="segmented" role="radiogroup">
-          <button type="button" class="seg active" data-eltype="existing">Existing loan</button>
-          <button type="button" class="seg" data-eltype="new">New loan</button>
+          <button type="button" class="seg active" data-ltype="new">New loan</button>
+          <button type="button" class="seg" data-ltype="existing">Existing loan</button>
         </div>
       </div>
 
       <div class="field">
-        <label for="el-amount"><span id="el-amount-label">Current balance</span></label>
-        <div class="input-prefix"><span>$</span><input id="el-amount" type="number" inputmode="decimal" value="800000" min="0" step="1000"></div>
+        <label for="ln-amount"><span id="ln-amount-label">Loan amount</span></label>
+        <div class="input-prefix"><span>$</span><input id="ln-amount" class="money" type="text" inputmode="decimal" value="800,000"></div>
+        <input type="range" class="slider" data-for="ln-amount" min="10000" max="3000000" step="5000" value="800000" aria-label="Loan amount slider">
       </div>
 
       <div class="field">
-        <label for="el-rate">Interest rate (% p.a.)</label>
-        <div class="input-suffix"><input id="el-rate" type="number" inputmode="decimal" value="6.5" min="0" step="0.01"><span>%</span></div>
+        <label for="ln-rate">Interest rate (% p.a.)</label>
+        <div class="stepper">
+          <button type="button" class="step-btn" data-for="ln-rate" data-step="-0.05" aria-label="Decrease rate">−</button>
+          <div class="input-suffix"><input id="ln-rate" type="number" inputmode="decimal" value="6.5" min="0" max="15" step="0.01"><span>%</span></div>
+          <button type="button" class="step-btn" data-for="ln-rate" data-step="0.05" aria-label="Increase rate">+</button>
+        </div>
+        <input type="range" class="slider" data-for="ln-rate" min="1" max="12" step="0.05" value="6.5" aria-label="Interest rate slider">
+      </div>
+
+      <div id="ln-term-wrap">
+        <div class="field-row">
+          <div class="field">
+            <label for="ln-term">Loan term — years</label>
+            <div class="stepper">
+              <button type="button" class="step-btn" data-for="ln-term" data-step="-1" aria-label="Decrease term">−</button>
+              <input id="ln-term" type="number" inputmode="numeric" value="30" min="1" max="40" step="1">
+              <button type="button" class="step-btn" data-for="ln-term" data-step="1" aria-label="Increase term">+</button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="ln-term-months">Months</label>
+            <input id="ln-term-months" type="number" inputmode="numeric" value="0" min="0" max="11" step="1">
+          </div>
+        </div>
+        <input type="range" class="slider slider-solo" data-for="ln-term" min="1" max="40" step="1" value="30" aria-label="Loan term slider">
       </div>
 
       <div class="field">
-        <label for="el-payment"><span id="el-payment-label">Repayment amount</span> <button type="button" class="help" data-tip="Existing loan: enter what you actually pay each period (from your statement). New loan: leave blank to auto-calculate from amount, rate, and term.">?</button></label>
-        <div class="input-prefix"><span>$</span><input id="el-payment" type="number" inputmode="decimal" placeholder="e.g. 3500" min="0" step="10"></div>
+        <label for="ln-payment"><span id="ln-payment-label">Repayment override</span> <small id="ln-pay-label" hidden>/ month</small> <button type="button" class="help" data-tip="New loan: leave blank to auto-calculate the contractual repayment. Existing loan: enter what you actually pay each period, from your statement.">?</button></label>
+        <div class="input-prefix"><span>$</span><input id="ln-payment" class="money" type="text" inputmode="decimal" placeholder="Auto-calculated"></div>
+        <small class="field-error" id="ln-payment-error" hidden></small>
       </div>
 
-      <div class="field">
+      <div class="field" id="ln-freq-wrap" style="display:none;">
         <label>Repayment frequency</label>
         <div class="segmented" role="radiogroup">
-          <button type="button" class="seg active" data-elfreq="monthly">Monthly</button>
-          <button type="button" class="seg" data-elfreq="fortnightly">Fortnightly</button>
-          <button type="button" class="seg" data-elfreq="weekly">Weekly</button>
+          <button type="button" class="seg active" data-lfreq="monthly">Monthly</button>
+          <button type="button" class="seg" data-lfreq="fortnightly">Fortnightly</button>
+          <button type="button" class="seg" data-lfreq="weekly">Weekly</button>
         </div>
       </div>
 
-      <div class="field-row" id="el-term-wrap" style="display:none;">
-        <div class="field">
-          <label for="el-term-years" id="el-term-years-label">Term — years</label>
-          <input id="el-term-years" type="number" inputmode="numeric" value="30" min="0" max="40" step="1">
-        </div>
-        <div class="field">
-          <label for="el-term-months">Months</label>
-          <input id="el-term-months" type="number" inputmode="numeric" value="0" min="0" max="11" step="1">
+      <div class="field" id="ln-ptype-wrap">
+        <label>Repayment type <button type="button" class="help" data-tip="Principal & Interest pays the loan down. Interest-only covers just the interest — repayments are lower but the balance never reduces during the IO period.">?</button></label>
+        <div class="segmented" role="radiogroup">
+          <button type="button" class="seg active" data-lptype="pi">Principal &amp; Interest</button>
+          <button type="button" class="seg" data-lptype="io">Interest only</button>
         </div>
       </div>
 
-      <div class="field" id="el-start-wrap" style="display:none;">
-        <label for="el-start">Loan start date <span class="optional-tag">(optional, unlocks "Where you are now")</span></label>
-        <input id="el-start" type="month" value="">
+      <div class="field" id="ln-start-wrap">
+        <label for="ln-start">Loan start date <span class="optional-tag">(optional, unlocks "Where you are now")</span></label>
+        <input id="ln-start" type="month" value="">
       </div>
 
-      <!-- ================ OPTIONAL SECTIONS (progressive disclosure) ================ -->
+      <div class="field">
+        <label for="ln-extra">Extra repayment per period (optional) <button type="button" class="help" data-tip="A steady amount on top of the contractual repayment each period. For one-off lump sums or extras starting later, use the Extra repayments section below.">?</button></label>
+        <div class="input-prefix"><span>$</span><input id="ln-extra" class="money" type="text" inputmode="decimal" value="" placeholder="0"></div>
+      </div>
+
+      <!-- ================ OPTIONAL SECTIONS ================ -->
+
+      <details class="opt-section" id="ln-offset-section">
+        <summary>Offset account <span class="count" id="ln-offset-summary" hidden></span></summary>
+        <div class="field" style="margin-top:12px;">
+          <label for="ln-offset">Current balance</label>
+          <div class="input-prefix"><span>$</span><input id="ln-offset" class="money" type="text" inputmode="decimal" value="" placeholder="0"></div>
+        </div>
+        <label class="check-row">
+          <input type="checkbox" id="ln-offset-end" checked>
+          <span>End loan when fully offset <button type="button" class="help" data-tip="When the offset balance equals (or exceeds) the loan balance, the loan is treated as complete. Turn this off to model a lender that keeps the loan running for the full term.">?</button></span>
+        </label>
+      </details>
+
+      <details class="opt-section" id="ln-compare-section">
+        <summary>Compare another rate <span class="count" id="ln-compare-pill" hidden>ON</span></summary>
+        <div class="field" style="margin-top:12px;">
+          <label for="ln-rate2">Compare rate (% p.a.) <button type="button" class="help" data-tip="Bank A vs Bank B: everything else stays the same — only the rate flips. Rate-change events are excluded from the comparison so it stays a pure rate-vs-rate test.">?</button></label>
+          <div class="input-suffix"><input id="ln-rate2" type="number" inputmode="decimal" placeholder="e.g. 6.25" min="0" step="0.01"><span>%</span></div>
+        </div>
+        <small class="hint">A small rate difference can mean thousands over the life of the loan.</small>
+      </details>
+
+      <details class="opt-section">
+        <summary>Extra repayments — dated <span class="count" id="ln-extras-count" hidden></span></summary>
+        <div class="event-list" id="ln-extras-list"></div>
+        <button type="button" class="add-event" data-action="add-extra">+ Add extra repayment</button>
+        <small class="hint">One-off lump sums or recurring contributions starting from a chosen month — a tax refund, a pay rise, an annual bonus.</small>
+      </details>
+
+      <details class="opt-section">
+        <summary>Rate changes <span class="count" id="ln-rates-count" hidden></span></summary>
+        <div class="event-list" id="ln-rates-list"></div>
+        <button type="button" class="add-event" data-action="add-rate">+ Add rate change</button>
+        <small class="hint">Stress-test the loan against rate hikes or cuts. Each change applies from its date; the contractual repayment re-amortises unless you've entered your own repayment.</small>
+      </details>
 
       <details class="opt-section">
         <summary>Interest-only period</summary>
         <div class="field-row" style="margin-top:12px;">
           <div class="field">
-            <label for="el-io-years">Years</label>
-            <input id="el-io-years" type="number" inputmode="numeric" value="0" min="0" max="10" step="1">
+            <label for="ln-io-years">Years</label>
+            <input id="ln-io-years" type="number" inputmode="numeric" value="0" min="0" max="10" step="1">
           </div>
           <div class="field">
-            <label for="el-io-months">Months</label>
-            <input id="el-io-months" type="number" inputmode="numeric" value="0" min="0" max="11" step="1">
+            <label for="ln-io-months">Months</label>
+            <input id="ln-io-months" type="number" inputmode="numeric" value="0" min="0" max="11" step="1">
           </div>
         </div>
-        <small class="hint">From the start of the loan. After IO ends, payment recalculates to amortise over the remaining term.</small>
+        <small class="hint">From the start of the loan. After IO ends, the payment recalculates to amortise over the remaining term.</small>
       </details>
 
-      <details class="opt-section" id="el-offset-section">
-        <summary>Offset account <span class="count" id="el-offset-summary" hidden></span></summary>
+      <details class="opt-section">
+        <summary>Property tracking <span class="count" id="ln-prop-summary" hidden></span></summary>
         <div class="field" style="margin-top:12px;">
-          <label for="el-offset">Current balance</label>
-          <div class="input-prefix"><span>$</span><input id="el-offset" type="number" inputmode="decimal" value="0" min="0" step="500"></div>
-        </div>
-        <label class="check-row">
-          <input type="checkbox" id="el-offset-end" checked>
-          <span>End loan when fully offset <button type="button" class="help" data-tip="When the offset balance equals (or exceeds) the loan balance, the loan is treated as complete. Turn this off to model a lender that keeps the loan running for the full term.">?</button></span>
-        </label>
-      </details>
-
-      <details class="opt-section">
-        <summary>Extra repayments <span class="count" id="el-extras-count" hidden></span></summary>
-        <div class="event-list" id="el-extras-list"></div>
-        <button type="button" class="add-event" data-action="add-extra">+ Add extra repayment</button>
-        <small class="hint">Each entry can be a one-off lump sum or a recurring contribution. Useful for modelling a tax refund, a pay rise, or a sustained weekly extra.</small>
-      </details>
-
-      <details class="opt-section">
-        <summary>Rate changes <span class="count" id="el-rates-count" hidden></span></summary>
-        <div class="event-list" id="el-rates-list"></div>
-        <button type="button" class="add-event" data-action="add-rate">+ Add rate change</button>
-        <small class="hint">Stress-test the loan against rate hikes or drops. Each change takes effect from its date forward; the contractual repayment is recalculated based on the remaining term.</small>
-      </details>
-
-      <details class="opt-section">
-        <summary>Property tracking <span class="count" id="el-prop-summary" hidden></span></summary>
-        <div class="field" style="margin-top:12px;">
-          <label for="el-prop-value">Current property value</label>
-          <div class="input-prefix"><span>$</span><input id="el-prop-value" type="number" inputmode="decimal" placeholder="e.g. 950000" min="0" step="1000"></div>
+          <label for="ln-prop-value">Current property value</label>
+          <div class="input-prefix"><span>$</span><input id="ln-prop-value" class="money" type="text" inputmode="decimal" placeholder="e.g. 950,000"></div>
         </div>
         <div class="field">
-          <label for="el-prop-growth">Annual growth (%)</label>
-          <div class="input-suffix"><input id="el-prop-growth" type="number" inputmode="decimal" value="3" step="0.1"><span>%</span></div>
+          <label for="ln-prop-growth">Annual growth (%)</label>
+          <div class="input-suffix"><input id="ln-prop-growth" type="number" inputmode="decimal" value="3" step="0.1"><span>%</span></div>
         </div>
-        <small class="hint">Unlocks LVR and equity tracking in the results below.</small>
+        <small class="hint">Unlocks LVR and equity tracking in the results.</small>
       </details>
 
-      <!-- ================ RESULTS ================ -->
-      <div class="results">
-        <h3 class="section-heading">Where you are now</h3>
+      <details class="opt-section" id="ln-verifier-section" style="display:none;">
+        <summary>Verify a lender interest charge</summary>
+        <div class="field" style="margin-top:12px;">
+          <label for="ln-charge">Interest charged this period <button type="button" class="help" data-tip="The interest line on your bank statement. We back-solve what your effective offset must have been: useful for spotting mid-month offset transfers or auditing the bank.">?</button></label>
+          <div class="input-prefix"><span>$</span><input id="ln-charge" class="money" type="text" inputmode="decimal" value="2,800.80"></div>
+        </div>
+        <div class="field">
+          <label for="ln-days">Days in billing period</label>
+          <input id="ln-days" type="number" inputmode="numeric" value="31" min="1" max="62" step="1">
+        </div>
+        <div class="result-card subtle">
+          <span class="label">Implied effective offset that period</span>
+          <span class="value" id="ln-implied-offset">—</span>
+        </div>
+      </details>
 
-        <div class="result-card primary">
-          <span class="label">Current loan balance</span>
-          <span class="value" id="el-current">—</span>
+      </div><!-- /.inputs -->
+
+      <div class="results">
+        <div class="result-card primary hero">
+          <div class="hero-head">
+            <span class="label"><span id="ln-hero-label">Repayment</span> <small id="ln-freq-label">/ month</small></span>
+            <div class="segmented seg-hero" id="ln-hero-pills" role="radiogroup" aria-label="Repayment frequency">
+              <button type="button" class="seg active" data-lfreq="monthly">Monthly</button>
+              <button type="button" class="seg" data-lfreq="fortnightly">Fortnightly</button>
+              <button type="button" class="seg" data-lfreq="weekly">Weekly</button>
+            </div>
+          </div>
+          <span class="value" id="ln-hero">—</span>
         </div>
 
-        <div class="progress-wrap">
-          <div class="progress-meta">
-            <span><strong id="el-progress-pct">—</strong> paid off</span>
-            <span id="el-progress-time">—</span>
+        <div class="empty-prompt" id="ln-guard" hidden>
+          Enter your <strong>repayment amount</strong> above to project this loan.
+        </div>
+
+        <div class="pi-wrap" id="ln-pi-wrap">
+          <div class="pi-bar">
+            <div class="pi-principal" id="ln-pi-principal"></div>
+            <div class="pi-interest" id="ln-pi-interest"></div>
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill" id="el-progress-fill" style="width:0%"></div>
+          <div class="pi-legend">
+            <span><i class="dot dot-principal"></i> Principal <strong id="ln-pi-plabel">—</strong></span>
+            <span><i class="dot dot-interest"></i> Interest <strong id="ln-pi-ilabel">—</strong></span>
           </div>
         </div>
 
         <div class="result-row">
           <div class="result-card">
-            <span class="label">Interest paid so far</span>
-            <span class="value" id="el-interest-paid">—</span>
+            <span class="label" id="ln-c1-label">Total interest</span>
+            <span class="value" id="ln-c1">—</span>
           </div>
           <div class="result-card">
-            <span class="label">Principal paid</span>
-            <span class="value" id="el-principal-paid">—</span>
+            <span class="label" id="ln-c2-label">Total cost</span>
+            <span class="value" id="ln-c2">—</span>
+          </div>
+        </div>
+        <div class="result-row">
+          <div class="result-card">
+            <span class="label" id="ln-c3-label">Loan paid off</span>
+            <span class="value" id="ln-c3">—</span>
+          </div>
+          <div class="result-card">
+            <span class="label" id="ln-c4-label">Actual term</span>
+            <span class="value" id="ln-c4">—</span>
           </div>
         </div>
 
-        <div class="result-row" id="el-property-row" hidden>
+        <div id="ln-now-block" hidden>
+          <h3 class="section-heading">Where you are now</h3>
+          <div class="progress-wrap">
+            <div class="progress-meta">
+              <span><strong id="ln-progress-pct">—</strong> paid off</span>
+              <span id="ln-progress-time">—</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="ln-progress-fill" style="width:0%"></div>
+            </div>
+          </div>
+          <div class="result-row" style="margin-top:10px;">
+            <div class="result-card">
+              <span class="label">Current balance</span>
+              <span class="value" id="ln-current">—</span>
+            </div>
+            <div class="result-card">
+              <span class="label">Interest paid so far</span>
+              <span class="value" id="ln-interest-paid">—</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-row" id="ln-property-row" hidden>
           <div class="result-card">
             <span class="label">Current LVR</span>
-            <span class="value" id="el-lvr">—</span>
+            <span class="value" id="ln-lvr">—</span>
           </div>
           <div class="result-card">
             <span class="label">Equity</span>
-            <span class="value" id="el-equity">—</span>
+            <span class="value" id="ln-equity">—</span>
           </div>
         </div>
 
-        <h3 class="section-heading">Where you're heading</h3>
+        <div class="result-card subtle" id="ln-saved-offset-card" hidden>
+          <span class="label">Saved by offset</span>
+          <span class="value" id="ln-saved-offset">—</span>
+        </div>
+        <div class="result-card subtle" id="ln-saved-extra-card" hidden>
+          <span class="label">Saved by extra repayments</span>
+          <span class="value" id="ln-saved-extra">—</span>
+        </div>
+        <div class="result-card combined" id="ln-saved-combined-card" hidden>
+          <span class="label">Combined savings</span>
+          <span class="value" id="ln-saved-combined">—</span>
+        </div>
+        <div class="empty-prompt" id="ln-empty" hidden>
+          Add an <strong>offset</strong> or <strong>extra repayment</strong> to see how much you'd save.
+        </div>
+        <p class="freq-note" id="ln-io-note" hidden>
+          <strong>Interest-only:</strong> these repayments cover interest alone — the balance doesn't reduce.
+          When the IO period ends, repayments step up to amortise the full loan over the remaining term.
+        </p>
+        <p class="freq-note" id="ln-freq-note" hidden></p>
 
-        <div class="result-row">
-          <div class="result-card">
-            <span class="label">Time remaining</span>
-            <span class="value" id="el-time-left">—</span>
+        <div id="ln-projection">
+          <div class="chart-wrap">
+            <div class="chart-title" id="ln-chart-title">Loan balance over time</div>
+            <svg id="ln-chart" class="chart" viewBox="0 0 600 260" preserveAspectRatio="none" aria-hidden="true"></svg>
+            <div class="chart-legend">
+              <span><i class="dot dot-navy"></i> Loan balance</span>
+              <span><i class="dot dot-tan"></i> Cumulative interest</span>
+              <span><i class="dot dot-sage"></i> Cumulative principal</span>
+            </div>
           </div>
-          <div class="result-card">
-            <span class="label">Finish date</span>
-            <span class="value" id="el-finish">—</span>
+
+          <div class="bd-toolbar">
+            <div class="segmented" role="radiogroup">
+              <button type="button" class="seg active" data-lview="yearly">Yearly</button>
+              <button type="button" class="seg" data-lview="monthly">Monthly</button>
+            </div>
           </div>
-        </div>
 
-        <div class="result-row">
-          <div class="result-card">
-            <span class="label">Interest remaining</span>
-            <span class="value" id="el-interest-future">—</span>
-          </div>
-          <div class="result-card">
-            <span class="label">Total interest (life of loan)</span>
-            <span class="value" id="el-interest-total">—</span>
-          </div>
-        </div>
-
-        <div class="result-card subtle" id="el-saved-offset-card" hidden>
-          <span class="label">Time saved by offset</span>
-          <span class="value" id="el-saved-offset">—</span>
-        </div>
-        <div class="result-card subtle" id="el-saved-extra-card" hidden>
-          <span class="label">Time saved by extras</span>
-          <span class="value" id="el-saved-extra">—</span>
-        </div>
-        <div class="result-card combined" id="el-saved-combined-card" hidden>
-          <span class="label">Combined time saved</span>
-          <span class="value" id="el-saved-combined">—</span>
-        </div>
-
-        <p class="disclaimer" id="el-disclaimer">Simulation assumes constant offset and rate. Adjust via the sections above.</p>
-      </div>
-    </section>
-
-    <!-- ============ BREAKDOWN ============ -->
-    <section id="breakdown" class="panel" role="tabpanel">
-      <h2>Loan Breakdown</h2>
-      <p class="hint">Month-by-month — see how much of each payment is interest vs principal, and how your offset shrinks the loan.</p>
-
-      <div class="field">
-        <label for="bd-amount">Loan amount</label>
-        <div class="input-prefix"><span>$</span><input id="bd-amount" type="number" inputmode="decimal" value="800000" min="0" step="1000"></div>
-      </div>
-
-      <div class="field">
-        <label for="bd-rate">Interest rate (% p.a.)</label>
-        <div class="input-suffix"><input id="bd-rate" type="number" inputmode="decimal" value="6.5" min="0" step="0.01"><span>%</span></div>
-      </div>
-
-      <div class="field-row">
-        <div class="field">
-          <label for="bd-term">Loan term — years</label>
-          <input id="bd-term" type="number" inputmode="numeric" value="30" min="0" max="40" step="1">
-        </div>
-        <div class="field">
-          <label for="bd-term-months">Months</label>
-          <input id="bd-term-months" type="number" inputmode="numeric" value="0" min="0" max="11" step="1">
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="bd-offset">Offset balance <button type="button" class="help" data-tip="Assumed constant for the life of the loan. In reality you'll likely grow it over time, so this is a conservative view.">?</button></label>
-        <div class="input-prefix"><span>$</span><input id="bd-offset" type="number" inputmode="decimal" value="0" min="0" step="500"></div>
-      </div>
-
-      <div class="field">
-        <label for="bd-extra">Extra repayment per month <button type="button" class="help" data-tip="Added on top of the contractual repayment every month. Has a compounding effect.">?</button></label>
-        <div class="input-prefix"><span>$</span><input id="bd-extra" type="number" inputmode="decimal" value="0" min="0" step="50"></div>
-      </div>
-
-      <div class="results">
-        <div class="result-row">
-          <div class="result-card">
-            <span class="label">Total interest</span>
-            <span class="value" id="bd-interest">—</span>
-          </div>
-          <div class="result-card">
-            <span class="label">Loan paid off</span>
-            <span class="value" id="bd-finish">—</span>
+          <div class="schedule-wrap">
+            <table class="schedule">
+              <thead>
+                <tr>
+                  <th>Period</th>
+                  <th class="num">Payment</th>
+                  <th class="num">Interest</th>
+                  <th class="num">Principal</th>
+                  <th class="num">Balance</th>
+                </tr>
+              </thead>
+              <tbody id="ln-schedule-body"></tbody>
+            </table>
           </div>
         </div>
 
-        <div class="chart-wrap">
-          <div class="chart-title">Loan balance over time</div>
-          <svg id="bd-chart" class="chart" viewBox="0 0 600 260" preserveAspectRatio="none" aria-hidden="true"></svg>
-          <div class="chart-legend">
-            <span><i style="background:#1A2B52"></i> Loan balance</span>
-            <span><i style="background:#c9a479"></i> Cumulative interest</span>
-            <span><i style="background:#5a716c"></i> Cumulative principal</span>
+        <div class="compare-panel" id="ln-compare-panel" hidden>
+          <h3 class="section-heading">Rate comparison</h3>
+          <div class="compare-grid">
+            <div class="compare-bank" id="ln-compare-bankA">
+              <div class="compare-head">
+                <span class="compare-name">Your rate</span>
+                <span class="compare-rate" id="ln-compare-rateA">—</span>
+              </div>
+              <dl class="compare-stats">
+                <div><dt id="ln-compare-r1-label">Repayment</dt><dd id="ln-compare-payA">—</dd></div>
+                <div><dt>Total interest</dt><dd id="ln-compare-intA">—</dd></div>
+                <div><dt>Total cost</dt><dd id="ln-compare-costA">—</dd></div>
+              </dl>
+            </div>
+            <div class="compare-bank" id="ln-compare-bankB">
+              <div class="compare-head">
+                <span class="compare-name">Other rate</span>
+                <span class="compare-rate" id="ln-compare-rateB">—</span>
+              </div>
+              <dl class="compare-stats">
+                <div><dt id="ln-compare-r1-labelB">Repayment</dt><dd id="ln-compare-payB">—</dd></div>
+                <div><dt>Total interest</dt><dd id="ln-compare-intB">—</dd></div>
+                <div><dt>Total cost</dt><dd id="ln-compare-costB">—</dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="compare-delta">
+            <div class="delta-headline" id="ln-delta-headline">—</div>
+            <div class="delta-grid">
+              <div><dt id="ln-delta-1-label">Per month</dt><dd id="ln-delta-pay">—</dd></div>
+              <div><dt>Over the loan</dt><dd id="ln-delta-int">—</dd></div>
+            </div>
           </div>
         </div>
 
-        <div class="bd-toolbar">
-          <div class="segmented" role="radiogroup">
-            <button type="button" class="seg active" data-bdview="yearly">Yearly</button>
-            <button type="button" class="seg" data-bdview="monthly">Monthly</button>
-          </div>
+        <div class="cta-row">
+          <button type="button" class="cta-chip" data-goto="stamp">Stamp duty →</button>
+          <button type="button" class="cta-chip" data-goto="borrow">Can I borrow this? →</button>
+          <button type="button" class="cta-chip" data-goto="lmi">LMI →</button>
         </div>
 
-        <div class="schedule-wrap">
-          <table class="schedule" id="bd-schedule">
-            <thead>
-              <tr>
-                <th>Period</th>
-                <th class="num">Payment</th>
-                <th class="num">Interest</th>
-                <th class="num">Principal</th>
-                <th class="num">Balance</th>
-              </tr>
-            </thead>
-            <tbody id="bd-schedule-body"></tbody>
-          </table>
-        </div>
+        <p class="disclaimer" id="ln-disclaimer">Simulation assumes a constant rate and offset unless you add events above.</p>
 
-        <p class="disclaimer">Simulation assumes constant interest rate and offset balance.</p>
-      </div>
+        <details class="extra-tool assumptions">
+          <summary>How is this calculated?</summary>
+          <ul>
+            <li>Everything comes from one simulation of the loan — the hero figure, the chart, and the schedule always agree.</li>
+            <li>Interest accrues <em>daily</em> (Actual/365 — odd month lengths and leap years included) and is charged monthly, the way Australian lenders do it.</li>
+            <li>Because the standard repayment formula assumes equal months, the loan can finish a month or so either side of the nominal term — real loans do the same.</li>
+            <li>New loan: the contractual repayment is the standard amortising amount <em>P = L·r / (1 − (1+r)⁻ⁿ)</em> at your chosen frequency. Existing loan: your entered repayment is used as-is.</li>
+            <li>Weekly / fortnightly figures are true amortising payments (≈ monthly × 12 ÷ 52 or ÷ 26) — not the lender "divide by 4" shortcut.</li>
+            <li>Offset reduces the balance that interest is charged on. Extra repayments and rate changes are dated events; each rate change re-amortises the contractual payment over the remaining term.</li>
+            <li>During an interest-only period, payments cover interest and the balance holds still.</li>
+            <li>The rate comparison excludes rate-change events so it stays a pure rate-vs-rate test.</li>
+          </ul>
+        </details>
+      </div><!-- /.results -->
+      </div><!-- /.panel-grid -->
     </section>
 
     <!-- ============ STAMP DUTY ============ -->
@@ -545,9 +411,13 @@
       <h2>Stamp Duty</h2>
       <p class="hint">Estimated transfer duty across all Australian states & territories.</p>
 
+      <div class="panel-grid">
+      <div class="inputs">
+
       <div class="field">
         <label for="sd-price">Property price</label>
-        <div class="input-prefix"><span>$</span><input id="sd-price" type="number" inputmode="decimal" value="750000" min="0" step="1000"></div>
+        <div class="input-prefix"><span>$</span><input id="sd-price" class="money" type="text" inputmode="decimal" value="750,000"></div>
+        <input type="range" class="slider" data-for="sd-price" min="100000" max="3000000" step="10000" value="750000" aria-label="Property price slider">
       </div>
 
       <div class="field">
@@ -573,8 +443,10 @@
         </div>
       </div>
 
+      </div><!-- /.inputs -->
+
       <div class="results">
-        <div class="result-card primary">
+        <div class="result-card primary hero">
           <span class="label">Estimated stamp duty</span>
           <span class="value" id="sd-amount">—</span>
         </div>
@@ -583,7 +455,22 @@
           <span class="value" id="sd-rate">—</span>
         </div>
         <p class="disclaimer" id="sd-note">Estimate only — verify with your state revenue office.</p>
-      </div>
+
+        <div class="cta-row">
+          <button type="button" class="cta-chip" data-goto="lmi" data-map="sd-price:lmi-price">Check LMI for this price →</button>
+        </div>
+
+        <details class="extra-tool assumptions">
+          <summary>How is this calculated?</summary>
+          <ul>
+            <li>Uses each state's published tiered transfer-duty scales.</li>
+            <li>First-home-buyer mode applies concessions/exemptions with their phase-out thresholds.</li>
+            <li>Foreign-buyer surcharges and off-the-plan concessions are not included.</li>
+            <li>Scales last reviewed May 2026 — always confirm with your state revenue office.</li>
+          </ul>
+        </details>
+      </div><!-- /.results -->
+      </div><!-- /.panel-grid -->
     </section>
 
     <!-- ============ BORROWING POWER ============ -->
@@ -591,19 +478,31 @@
       <h2>Borrowing Power</h2>
       <p class="hint">Rough estimate of how much a lender may offer.</p>
 
+      <div class="panel-grid">
+      <div class="inputs">
+
       <div class="field">
         <label for="bp-income">Annual gross income (combined)</label>
-        <div class="input-prefix"><span>$</span><input id="bp-income" type="number" inputmode="decimal" value="120000" min="0" step="1000"></div>
+        <div class="input-prefix"><span>$</span><input id="bp-income" class="money" type="text" inputmode="decimal" value="120,000"></div>
+        <input type="range" class="slider" data-for="bp-income" min="30000" max="600000" step="5000" value="120000" aria-label="Income slider">
+      </div>
+
+      <div class="field">
+        <label>Household <button type="button" class="help" data-tip="Affects the Medicare-levy family threshold and the HEM living-expense benchmark lenders assess you against.">?</button></label>
+        <div class="segmented" role="radiogroup">
+          <button type="button" class="seg active" data-household="single">Single</button>
+          <button type="button" class="seg" data-household="couple">Couple</button>
+        </div>
       </div>
 
       <div class="field">
         <label for="bp-expenses">Monthly living expenses</label>
-        <div class="input-prefix"><span>$</span><input id="bp-expenses" type="number" inputmode="decimal" value="3500" min="0" step="100"></div>
+        <div class="input-prefix"><span>$</span><input id="bp-expenses" class="money" type="text" inputmode="decimal" value="3,500"></div>
       </div>
 
       <div class="field">
         <label for="bp-debts">Other monthly debt repayments</label>
-        <div class="input-prefix"><span>$</span><input id="bp-debts" type="number" inputmode="decimal" value="0" min="0" step="50"></div>
+        <div class="input-prefix"><span>$</span><input id="bp-debts" class="money" type="text" inputmode="decimal" value="" placeholder="0"></div>
       </div>
 
       <div class="field">
@@ -613,7 +512,12 @@
 
       <div class="field">
         <label for="bp-rate">Assessment rate (% p.a.) <button type="button" class="help" data-tip="APRA requires lenders to assess your serviceability at the actual rate + a 3% buffer. So if rates are 6.5%, lenders test you at 9.5%.">?</button></label>
-        <div class="input-suffix"><input id="bp-rate" type="number" inputmode="decimal" value="9.47" min="0" step="0.01"><span>%</span></div>
+        <div class="stepper">
+          <button type="button" class="step-btn" data-for="bp-rate" data-step="-0.05" aria-label="Decrease rate">−</button>
+          <div class="input-suffix"><input id="bp-rate" type="number" inputmode="decimal" value="9.47" min="0" max="18" step="0.01"><span>%</span></div>
+          <button type="button" class="step-btn" data-for="bp-rate" data-step="0.05" aria-label="Increase rate">+</button>
+        </div>
+        <input type="range" class="slider" data-for="bp-rate" min="3" max="15" step="0.05" value="9.47" aria-label="Assessment rate slider">
         <small class="hint">APRA-style buffer: typical rate + 3%.</small>
       </div>
 
@@ -628,8 +532,10 @@
         </div>
       </div>
 
+      </div><!-- /.inputs -->
+
       <div class="results">
-        <div class="result-card primary">
+        <div class="result-card primary hero">
           <span class="label">Estimated borrowing power</span>
           <span class="value" id="bp-amount">—</span>
         </div>
@@ -637,8 +543,24 @@
           <span class="label">Maximum monthly repayment</span>
           <span class="value" id="bp-payment">—</span>
         </div>
+        <p class="freq-note" id="bp-hem-note" hidden></p>
         <p class="disclaimer">Indicative only — actual lender assessments vary.</p>
-      </div>
+
+        <div class="cta-row">
+          <button type="button" class="cta-chip" data-goto="loan" data-map="bp-amount:ln-amount">Repayments on this →</button>
+        </div>
+
+        <details class="extra-tool assumptions">
+          <summary>How is this calculated?</summary>
+          <ul>
+            <li>After-tax income uses ATO 2024–25 resident brackets <em>plus the 2% Medicare levy</em>, with the low-income shade-in and family thresholds for couples/dependants.</li>
+            <li>Living expenses are floored at a simplified <em>HEM benchmark</em> (≈ $1,750/mo single, ≈ $3,100/mo couple, + $550 per dependant, scaling with income) — lenders assess max(declared, HEM).</li>
+            <li>85% of your monthly surplus is treated as available for repayments.</li>
+            <li>The maximum loan is what that repayment services at the APRA-style assessment rate.</li>
+          </ul>
+        </details>
+      </div><!-- /.results -->
+      </div><!-- /.panel-grid -->
     </section>
 
     <!-- ============ LMI ============ -->
@@ -646,34 +568,62 @@
       <h2>Lenders Mortgage Insurance</h2>
       <p class="hint">LMI typically applies when your deposit is under 20% (LVR &gt; 80%).</p>
 
+      <div class="panel-grid">
+      <div class="inputs">
+
       <div class="field">
         <label for="lmi-price">Property value</label>
-        <div class="input-prefix"><span>$</span><input id="lmi-price" type="number" inputmode="decimal" value="750000" min="0" step="1000"></div>
+        <div class="input-prefix"><span>$</span><input id="lmi-price" class="money" type="text" inputmode="decimal" value="750,000"></div>
+        <input type="range" class="slider" data-for="lmi-price" min="100000" max="3000000" step="10000" value="750000" aria-label="Property value slider">
       </div>
 
       <div class="field">
         <label for="lmi-deposit">Deposit <button type="button" class="help" data-tip="LMI typically kicks in when your deposit is under 20% (i.e. LVR > 80%). The premium rises sharply between 90% and 95% LVR — a small extra deposit can save thousands.">?</button></label>
-        <div class="input-prefix"><span>$</span><input id="lmi-deposit" type="number" inputmode="decimal" value="75000" min="0" step="1000"></div>
+        <div class="input-prefix"><span>$</span><input id="lmi-deposit" class="money" type="text" inputmode="decimal" value="75,000"></div>
+        <input type="range" class="slider" data-for="lmi-deposit" min="0" max="1000000" step="5000" value="75000" aria-label="Deposit slider">
       </div>
 
+      </div><!-- /.inputs -->
+
       <div class="results">
-        <div class="result-card">
-          <span class="label">Loan amount</span>
-          <span class="value" id="lmi-loan">—</span>
-        </div>
-        <div class="result-card">
-          <span class="label">LVR</span>
-          <span class="value" id="lmi-lvr">—</span>
-        </div>
-        <div class="result-card primary">
+        <div class="result-card primary hero">
           <span class="label">Estimated LMI</span>
           <span class="value" id="lmi-amount">—</span>
         </div>
+        <div class="result-row">
+          <div class="result-card">
+            <span class="label">Loan amount</span>
+            <span class="value" id="lmi-loan">—</span>
+          </div>
+          <div class="result-card">
+            <span class="label">LVR</span>
+            <span class="value" id="lmi-lvr">—</span>
+          </div>
+        </div>
         <p class="disclaimer">Estimate based on industry-standard LMI premium tables.</p>
-      </div>
+
+        <div class="cta-row">
+          <button type="button" class="cta-chip" data-goto="loan" data-map="lmi-loan:ln-amount">Repayments on this loan →</button>
+        </div>
+
+        <details class="extra-tool assumptions">
+          <summary>How is this calculated?</summary>
+          <ul>
+            <li>Premium looked up in a 6 × 6 grid of LVR band × loan-size tier, modelled on industry-standard tables.</li>
+            <li>No LMI below 80% LVR.</li>
+            <li>Assumes the premium is paid upfront — capitalising it into the loan slightly raises LVR and cost.</li>
+          </ul>
+        </details>
+      </div><!-- /.results -->
+      </div><!-- /.panel-grid -->
     </section>
 
   </main>
+
+  <div class="mini-bar" id="mini-bar" hidden>
+    <span class="mini-label" id="mini-label">—</span>
+    <span class="mini-value" id="mini-value">—</span>
+  </div>
 
   <footer class="app-footer">
     <div class="footer-row">
@@ -683,8 +633,8 @@
     <ul class="footer-list">
       <li>All calculations run on your device — no signup, no tracking, no lender affiliation.</li>
       <li>Stamp duty scales and LMI premium grids last reviewed: <strong>May 2026</strong>. Verify with your state revenue office and lender.</li>
-      <li>Tax brackets use ATO 2024–25 resident rates. Borrowing-power figures use APRA-style serviceability buffer.</li>
-      <li>Source: <a href="app.js">app.js</a> · <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a></li>
+      <li>Tax brackets use ATO 2024–25 resident rates including the Medicare levy. Borrowing power floors expenses at a simplified HEM benchmark and applies an APRA-style serviceability buffer.</li>
+      <li>Source: <a href="app.js">app.js</a></li>
     </ul>
   </footer>
 

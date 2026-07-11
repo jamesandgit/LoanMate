@@ -13,12 +13,15 @@ It runs as a static page (open `index.html`), installs as a native-feeling app o
 
 ## Features
 
-- **Mortgage repayments** — monthly / fortnightly / weekly schedules, with optional offset balance and extra repayments
-- **Payoff time** — given a current balance and what you're paying, when does the loan finish? Includes finish date, remaining interest, and a lender-interest-charge verifier that back-solves your effective offset from a statement
+- **Loan calculator (unified)** — one tab handles it all:
+  - *New loan*: repayments at monthly / fortnightly / weekly frequency, P&I or interest-only, finish date, rate comparison (Bank A vs Bank B with a winner badge)
+  - *Existing loan*: enter balance + what you actually pay → time remaining, finish date, interest remaining, plus a lender-interest-charge verifier that back-solves your effective offset from a statement
+  - Offset account, steady extras, dated one-off / recurring extra repayments, rate-change stress tests, interest-only periods, property value / LVR / equity tracking
+  - Live SVG chart and full amortisation schedule (yearly or monthly), rendered from the same simulation as every headline number
+  - Savings split into *by offset*, *by extras*, and *combined* — in dollars **and** time
 - **Stamp duty** — all eight Australian states and territories with proper tiered scales; owner-occupier / investor / first-home-buyer toggle, with FHB concessions applied for NSW, VIC, QLD, WA, SA, TAS, ACT, NT
 - **Borrowing power** — uses ATO 2024–25 resident tax brackets, dependant adjustments, and an APRA-style serviceability buffer
 - **LMI estimator** — six LVR bands × six loan-size tiers, modelled on industry-standard premium grids
-- **Savings breakdown** — Repayments and Payoff each split savings into *by offset*, *by extra repayments*, and *combined*
 - **Installable + offline** — service worker caches everything on first load; "Add to Home Screen" makes it look and feel like a native app
 
 ## Getting started
@@ -63,8 +66,7 @@ Calculator field IDs follow a per-calculator prefix: `rep-` (repayments), `po-` 
 
 Each calculator is a small, deterministic function in [app.js](app.js). The math:
 
-- **Repayments** use the standard amortisation formula `P = L · r / (1 − (1+r)^−n)`, with savings decomposed against a no-offset / no-extra baseline so each lever's contribution is meaningful
-- **Payoff time** solves the same formula in reverse: `n = ln(P / (P − r·L)) / ln(1 + r)`
+- **Loan** runs a single month-by-month simulation (`simulateScenario`) — interest accrues on `balance − offset`, dated extra repayments and rate changes apply as events, and every output (repayment, payoff time, chart, schedule, savings) is a view of the same simulation. The contractual repayment for a new loan is the standard amortising amount `P = L · r / (1 − (1+r)^−n)`; savings are decomposed against a no-offset / no-extras baseline
 - **Stamp duty** uses tiered, per-state scales; FHB concessions phase in/out across published thresholds
 - **Borrowing power** computes after-tax monthly income (2024–25 brackets), subtracts living expenses + dependant cost + existing debts, applies an 85% lender buffer, then back-solves for max loan at the assessment rate
 - **LMI** is looked up in a 6×6 grid keyed on LVR band and loan-size tier
